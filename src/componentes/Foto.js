@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 class FotoAtualizacoes extends Component {
 
@@ -22,7 +23,8 @@ class FotoInfo extends Component {
             <div className="foto-info">
                 <div className="foto-info-likes">
                     {
-                        this.props.foto.likers.map(liker => <a href="#">{liker.login}, </a>)
+                        this.props.foto.likers.map((liker, i) => 
+                            <span><Link key={liker.login} to={`/timeline/${liker.login}`}>{liker.login}</Link>{i !== 0 ? ', ' : ''}</span>)
                     }
                 </div>
 
@@ -36,7 +38,7 @@ class FotoInfo extends Component {
                         this.props.foto.comentarios.map(comentario => {
                             return (
                                 <li className="comentario">
-                                    <a className="foto-info-autor">{comentario.login} </a>
+                                    <Link to={`/timeline/${comentario.login}`} className="foto-info-autor">{comentario.login}</Link>
                                     {comentario.texto}
                                 </li>
                             );
@@ -55,7 +57,7 @@ class FotoHeader extends Component {
                 <figure className="foto-usuario">
                     <img src={this.props.foto.urlPerfil} alt="foto do usuario" />
                     <figcaption className="foto-usuario">
-                        <a href="#">{this.props.foto.loginUsuario}</a>
+                        <Link to={`/timeline/${this.props.foto.loginUsuario}`}>{this.props.foto.loginUsuario}</Link>
                     </figcaption>
                 </figure>
                 <time className="foto-data">{this.props.foto.horario}</time>
@@ -68,7 +70,7 @@ export default class FotoItem extends Component {
     render() {
         return (
             <div className="foto">
-                <FotoHeader foto={this.props.foto}/>
+                <FotoHeader foto={this.props.foto} />
                 <img alt="foto" className="foto-src" src={this.props.foto.urlFoto} />
                 <FotoInfo foto={this.props.foto} />
                 <FotoAtualizacoes />
