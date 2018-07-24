@@ -3,9 +3,9 @@ import { Link } from 'react-router';
 
 class FotoAtualizacoes extends Component {
 
-    constructor(){
-        super();
-        this.state = {likeada : false};
+    constructor(props) {
+        super(props);
+        this.state = { likeada: this.props.foto.likeada };
     }
 
     like(event) {
@@ -18,13 +18,13 @@ class FotoAtualizacoes extends Component {
                     throw new Error("não foi possível realizar o like da foto");
                 }
             })
-            .then(liker => this.setState({likeada : true}) );
+            .then(liker => this.setState({ likeada: !this.state.likeada }));
     }
 
     render() {
         return (
             <section className="fotoAtualizacoes">
-                <a onClick={this.like.bind(this)} href="#" className={this.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
+                <a onClick={this.like.bind(this)} href="#" className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
                 <form className="fotoAtualizacoes-form">
                     <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" />
                     <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit" />
