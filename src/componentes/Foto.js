@@ -31,12 +31,36 @@ class FotoAtualizacoes extends Component {
             });
     }
 
+    comenta(event){
+        event.preventDefault();
+       
+        const requestInfo = {
+            method: 'POST',
+            body: JSON.stringify({texto: this.comentario.value}),
+            headers: new Headers({
+                'Content-type':'application/json'
+            })
+        };
+
+       fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/comment?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`, requestInfo)
+        .then(response => {
+            if(response.ok){
+                return response.json();
+            }else{
+                throw new Error("não foi possível comentar");
+            }
+        })
+        .then(novoComentario => {
+            console.log(novoComentario);
+        });
+    }
+
     render() {
         return (
             <section className="fotoAtualizacoes">
                 <a onClick={this.like.bind(this)} className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
-                <form className="fotoAtualizacoes-form">
-                    <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" />
+                <form className="fotoAtualizacoes-form" onSubmit={this.comenta.bind(this)}>
+                    <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" ref={input => this.comentario = input}/>
                     <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit" />
                 </form>
 
@@ -55,7 +79,7 @@ class FotoInfo extends Component {
     componentWillMount() {
         PubSub.subscribe(ATUALIZA_LIKER_EVENT, (topico, infoLiker) => {
             //apenas a foto que está sendo likeada
-            if(this.props.foto.id == infoLiker.fotoId){
+            if(this.props.foto.id === infoLiker.fotoId){
                 const possivelLiker = this.state.likers.find(liker => liker.login === infoLiker.liker.login);                
                 
                 if(possivelLiker === undefined){
@@ -75,7 +99,7 @@ class FotoInfo extends Component {
                 <div className="foto-info-likes">
                     {
                         this.state.likers.map((liker, i, likers) =>
-                            <span><Link key={liker.login} to={`/timeline/${liker.login}`}>{liker.login}</Link>{ (likers.length > 1 && i != likers.length -1) ? ', ' : ''}</span>)
+                            <span><Link key={liker.login} to={`/timeline/${liker.login}`}>{liker.login}</Link>{ (likers.length > 1 && i !== likers.length -1) ? ', ' : ''}</span>)
                     }
                 </div>
 
