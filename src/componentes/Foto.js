@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import PubSub from 'pubsub-js';
+import { ATUALIZA_LIKER_EVENT } from './Eventos';
 
 class FotoAtualizacoes extends Component {
 
@@ -18,13 +20,21 @@ class FotoAtualizacoes extends Component {
                     throw new Error("não foi possível realizar o like da foto");
                 }
             })
-            .then(liker => this.setState({ likeada: !this.state.likeada }));
+            .then(liker => {
+                this.setState({ likeada: !this.state.likeada });
+                PubSub.publish(ATUALIZA_LIKER_EVENT,
+                    {
+                        fotoId: this.props.foto.id,
+                        liker: liker
+                    }
+                );
+            });
     }
 
     render() {
         return (
             <section className="fotoAtualizacoes">
-                <a onClick={this.like.bind(this)} href="#" className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
+                <a onClick={this.like.bind(this)} className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>Likar</a>
                 <form className="fotoAtualizacoes-form">
                     <input type="text" placeholder="Adicione um comentário..." className="fotoAtualizacoes-form-campo" />
                     <input type="submit" value="Comentar!" className="fotoAtualizacoes-form-submit" />
@@ -36,13 +46,36 @@ class FotoAtualizacoes extends Component {
 }
 
 class FotoInfo extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { likers: props.foto.likers };
+    }
+
+    componentWillMount() {
+        PubSub.subscribe(ATUALIZA_LIKER_EVENT, (topico, infoLiker) => {
+            //apenas a foto que está sendo likeada
+            if(this.props.foto.id == infoLiker.fotoId){
+                const possivelLiker = this.state.likers.find(liker => liker.login === infoLiker.liker.login);                
+                
+                if(possivelLiker === undefined){
+                    const novosLikers = this.state.likers.concat(infoLiker.liker);                    
+                    this.setState({likers: novosLikers});
+                }else{
+                    const novosLikers = this.state.likers.filter(liker=> liker.login !== infoLiker.liker.login);
+                    this.setState({likers: novosLikers});
+                }
+            }           
+        })
+    }
+
     render() {
         return (
             <div className="foto-info">
                 <div className="foto-info-likes">
                     {
-                        this.props.foto.likers.map((liker, i) =>
-                            <span><Link key={liker.login} to={`/timeline/${liker.login}`}>{liker.login}</Link>{i !== 0 ? ', ' : ''}</span>)
+                        this.state.likers.map((liker, i, likers) =>
+                            <span><Link key={liker.login} to={`/timeline/${liker.login}`}>{liker.login}</Link>{ (likers.length > 1 && i != likers.length -1) ? ', ' : ''}</span>)
                     }
                 </div>
 
