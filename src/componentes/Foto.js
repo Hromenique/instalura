@@ -14,6 +14,7 @@ class FotoAtualizacoes extends Component {
 
     like(event) {
         event.preventDefault();
+
         fetch(`http://localhost:8080/api/fotos/${this.props.foto.id}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`, { method: 'POST' })
             .then(response => {
                 if (response.ok) {
@@ -31,9 +32,7 @@ class FotoAtualizacoes extends Component {
                     }
                 );
             })
-            .catch(erro => {
-                exibeMensagem(erro.message);
-            });
+            .catch(erro => exibeMensagem(erro.message));
     }
 
     comenta(event) {
@@ -61,7 +60,8 @@ class FotoAtualizacoes extends Component {
                         fotoId: this.props.foto.id,
                         novoComentario
                     });
-            });
+            })
+            .catch(erro => exibeMensagem(erro.message));
     }
 
     render() {
@@ -82,7 +82,10 @@ class FotoInfo extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { likers: props.foto.likers };
+        this.state = {
+            likers: props.foto.likers,
+            comentarios: this.props.foto.comentarios
+        };
     }
 
     componentWillMount() {
@@ -99,7 +102,14 @@ class FotoInfo extends Component {
                     this.setState({ likers: novosLikers });
                 }
             }
-        })
+        });
+
+        PubSub.subscribe(NOVO_COMENTARIO_EVENT, (topico, infoComentario) => {
+            if (this.props.foto.id === infoComentario.fotoId) {
+                const novosComentarios = this.state.comentarios.concat(infoComentario.novoComentario);
+                this.setState({ comentarios: novosComentarios });
+            }
+        });
     }
 
     render() {
@@ -113,17 +123,17 @@ class FotoInfo extends Component {
                 </div>
 
                 <p className="foto-info-legenda">
-                    <a className="foto-info-autor">autor </a>
+                    <a className="foto-info-autor">autor</a>
                     {this.props.foto.comentario}
                 </p>
 
                 <ul className="foto-info-comentarios">
                     {
-                        this.props.foto.comentarios.map(comentario => {
+                        this.state.comentarios.map(comentario => {
                             return (
                                 <li className="comentario">
                                     <Link to={`/timeline/${comentario.login}`} className="foto-info-autor">{comentario.login}</Link>
-                                    {comentario.texto}
+                                    &nbsp;{comentario.texto}
                                 </li>
                             );
                         })
