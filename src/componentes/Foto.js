@@ -9,7 +9,7 @@ class FotoAtualizacoes extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { likeada: this.props.foto.likeada };
+        this.state = { likeada: this.props.foto.likeada, comentario: '' };
     }
 
     like(event) {
@@ -37,6 +37,8 @@ class FotoAtualizacoes extends Component {
 
     comenta(event) {
         event.preventDefault();
+
+        console.log(this.state.comentario);
 
         const requestInfo = {
             method: 'POST',

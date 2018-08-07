@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
+import { TIMELINE_EVENT } from './Eventos';
+import Pubsub from 'pubsub-js';
 
 export default class Timeline extends Component {
 
@@ -7,6 +9,15 @@ export default class Timeline extends Component {
         super(props);
         this.state = { fotos: [] };
         this.login = this.props.login;
+    }
+
+    componentWillMount() {
+        Pubsub.subscribe(TIMELINE_EVENT, (topico, fotos) => this.setState({ fotos: fotos }))
+        /*
+        Pubsub.subscribe(TIMELINE_EVENT,(topico,fotos) => {
+            console.log(fotos);
+         });
+        */
     }
 
     componentDidMount() {
