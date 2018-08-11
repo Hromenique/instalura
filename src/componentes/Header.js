@@ -9,7 +9,7 @@ export default class Header extends Component {
         event.preventDefault();
         fetch(`http://localhost:8080/api/public/fotos/${this.loginPesquisado.value}`)
             .then(response => response.json())
-            .then(fotos => Pubsub.publish(TIMELINE_EVENT, {fotos}));
+            .then(fotos => Pubsub.publish(TIMELINE_EVENT, fotos));
     }
 
     render() {
