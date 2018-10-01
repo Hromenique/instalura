@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { TIMELINE_EVENT } from './Eventos';
+import { TIMELINE_EVENT } from '../eventos/Eventos';
 import Pubsub from 'pubsub-js';
 
 export default class Header extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PubSub from 'pubsub-js';
-import { MESSAGE_EVENT } from './Eventos';
+import { MESSAGE_EVENT } from '../eventos/Eventos';
 import '../css/toast.css';
 
 export default class Toast extends Component {
