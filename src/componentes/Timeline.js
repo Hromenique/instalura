@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import FotoItem from './Foto';
 import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
-import LogicaTimeLine from '../logicas/LogicaTimeLine'
 
 export default class Timeline extends Component {
 
@@ -9,7 +8,7 @@ export default class Timeline extends Component {
         super(props);
         this.state = { fotos: [] };
         this.login = this.props.login;
-        this.logicaTimeline = new LogicaTimeLine([]);
+        this.logicaTimeline = this.props.logicaTimeline;
     }
 
     componentWillMount() {

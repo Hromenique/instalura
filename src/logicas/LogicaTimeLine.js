@@ -13,6 +13,15 @@ export default class LogicaTimeLine{
         PubSub.subscribe(TIMELINE_EVENT, (topico, fotos) => callback(fotos)); 
     }
 
+    pesquisa(login){
+        fetch(`http://localhost:8080/api/public/fotos/${login}`)
+            .then(response => response.json())
+            .then(fotos => {
+                PubSub.publish(TIMELINE_EVENT, fotos);
+                this.fotos = fotos;
+            });
+    }
+
     lista(urlPerfil){
         fetch(urlPerfil)
         .then(response => response.json())
