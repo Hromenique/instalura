@@ -3,7 +3,7 @@ import PubSub from 'pubsub-js';
 
 const exibeMensagem = mensagem => PubSub.publish(MESSAGE_EVENT, mensagem);
 
-export default class LogicaTimeLine{
+export default class TimelineStore{
 
     constructor(fotos){
         this.fotos = fotos;

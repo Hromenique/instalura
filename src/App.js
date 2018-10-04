@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import Header from './componentes/Header'
 import Timeline from './componentes/Timeline';
 import Toast from './componentes/Toast';
-import LogicaTimeLine from './logicas/LogicaTimeLine';
+import TimelineStore from './logicas/TimelineStore';
 
-const logicaTimeline = new LogicaTimeLine([]);
+const timelineStore = new TimelineStore([]);
 
 class App extends Component {
   render() {
     return (
       <div id="root">
         <div className="main">
-          <Header  logicaTimeline={logicaTimeline}/>
-          <Timeline login={this.props.params.login} logicaTimeline={logicaTimeline}/>
+          <Header  store={timelineStore}/>
+          <Timeline login={this.props.params.login} store={timelineStore}/>
           <Toast />
         </div>
       </div>

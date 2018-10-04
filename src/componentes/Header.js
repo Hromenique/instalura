@@ -5,7 +5,7 @@ export default class Header extends Component {
 
     pesquisa = (event) => {
         event.preventDefault();
-        this.props.logicaTimeline.pesquisa(this.loginPesquisado.value);
+        this.props.store.pesquisa(this.loginPesquisado.value);
     }
 
     render() {

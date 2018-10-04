@@ -8,11 +8,11 @@ export default class Timeline extends Component {
         super(props);
         this.state = { fotos: [] };
         this.login = this.props.login;
-        this.logicaTimeline = this.props.logicaTimeline;
+        this.store = this.props.store;
     }
 
     componentWillMount() {
-        this.logicaTimeline.subscribe(fotos => {
+        this.store.subscribe(fotos => {
             this.setState({fotos});
         });        
     }
@@ -36,15 +36,15 @@ export default class Timeline extends Component {
         } else {
             urlPerfil = `http://localhost:8080/api/public/fotos/${this.login}`;
         }
-        this.logicaTimeline.lista(urlPerfil);        
+        this.store.lista(urlPerfil);        
     }   
 
     like(fotoId){   
-        this.logicaTimeline.like(fotoId);        
+        this.store.like(fotoId);        
     }
 
     comenta(fotoId, textoComentario){
-        this.logicaTimeline.comenta(fotoId, textoComentario);
+        this.store.comenta(fotoId, textoComentario);
     }
 
     render() {

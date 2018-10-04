@@ -3,10 +3,6 @@ import { Link } from 'react-router';
 
 class FotoAtualizacoes extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     like(event) {
         event.preventDefault();
         this.props.like(this.props.foto.id);
@@ -33,10 +29,6 @@ class FotoAtualizacoes extends Component {
 }
 
 class FotoInfo extends Component {
-
-    constructor(props) {
-        super(props);        
-    }
 
     _textoCurtidas(){
         const quantLikers = this.props.foto.likers.length;
