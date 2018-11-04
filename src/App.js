@@ -2,29 +2,18 @@ import React, { Component } from 'react';
 import Header from './componentes/Header'
 import Timeline from './componentes/Timeline';
 import Toast from './componentes/Toast';
-import TimelineStore from './logicas/TimelineStore';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
+import thunkMiddleware from 'redux-thunk'
+import {timeline} from './reducers/timeline';
 
-const timelineStore = new TimelineStore([]);
-
-//REDUCER
-function timeline(state=[], action){
-  if(action.type === 'LISTAGEM'){
-    console.log('entrou na listagem');
-    return action.fotos;
-  }
-
-  return state;
-}
-
-const store = createStore(timeline);
+const store = createStore(timeline, applyMiddleware(thunkMiddleware));
 
 class App extends Component {
   render() {
     return (
       <div id="root">
         <div className="main">
-          <Header  store={timelineStore}/>
+          <Header/>
           <Timeline login={this.props.params.login} store={store}/>
           <Toast />
         </div>
