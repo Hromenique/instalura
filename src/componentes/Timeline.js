@@ -8,13 +8,12 @@ export default class Timeline extends Component {
     constructor(props) {
         super(props);
         this.state = { fotos: [] };
-        this.login = this.props.login;
-        this.store = this.props.store;
+        this.login = this.props.login;        
     }
 
     componentWillMount() {
-        this.store.subscribe(() => {
-            this.setState({fotos: this.store.getState()}) 
+        this.props.store.subscribe(() => {
+            this.setState({fotos: this.props.store.getState()}) 
         });
     }
 
@@ -41,8 +40,8 @@ export default class Timeline extends Component {
         this.props.store.dispatch(TimelineApi.lista(urlPerfil));
     }   
 
-    like(fotoId){   
-        this.store.like(fotoId);        
+    like(fotoId){  
+        this.props.store.dispatch(TimelineApi.like(fotoId));
     }
 
     comenta(fotoId, textoComentario){

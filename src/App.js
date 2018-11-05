@@ -13,7 +13,7 @@ class App extends Component {
     return (
       <div id="root">
         <div className="main">
-          <Header/>
+          <Header store={store}/>
           <Timeline login={this.props.params.login} store={store}/>
           <Toast />
         </div>

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import TimelineApi from '../logicas/TimelineApi';
 
 export default class Header extends Component {
 
     pesquisa = (event) => {
         event.preventDefault();
-        this.props.store.pesquisa(this.loginPesquisado.value);
+        this.props.store.dispatch(TimelineApi.pesquisa(this.loginPesquisado.value));
     }
 
     render() {

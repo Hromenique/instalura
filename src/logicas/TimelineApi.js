@@ -1,25 +1,11 @@
-import { MESSAGE_EVENT, TIMELINE_EVENT } from '../eventos/Eventos';
-import PubSub from 'pubsub-js';
-
-const exibeMensagem = mensagem => PubSub.publish(MESSAGE_EVENT, mensagem);
-
 export default class TimelineApi {
-
-    constructor(fotos) {
-        this.fotos = fotos;
+    
+    static exibeMensagem = mensagem => {
+        return dispatch => dispatch({type: 'MENSAGEM', mensagem});
     }
-
-    subscribe(callback) {
-        PubSub.subscribe(TIMELINE_EVENT, (topico, fotos) => callback(fotos));
-    }
-
-    pesquisa(login) {
-        fetch(`http://localhost:8080/api/public/fotos/${login}`)
-            .then(response => response.json())
-            .then(fotos => {
-                PubSub.publish(TIMELINE_EVENT, fotos);
-                this.fotos = fotos;
-            });
+    
+    static pesquisa(login) {
+        return TimelineApi.lista(`http://localhost:8080/api/public/fotos/${login}`);
     }
 
     static lista(urlPerfil) {
@@ -33,34 +19,25 @@ export default class TimelineApi {
         }
     }
 
-    like(fotoId) {
-        fetch(`http://localhost:8080/api/fotos/${fotoId}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`, { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("não foi possível realizar o like da foto");
-                }
-            })
-            .then(liker => {
-                const fotoAchada = this.fotos.find(foto => foto.id === fotoId);
-                fotoAchada.likeada = !fotoAchada.likeada;
-
-                const possivelLiker = fotoAchada.likers.find(likerAtual => likerAtual.login === liker.login);
-
-                if (possivelLiker === undefined) {
-                    fotoAchada.likers.push(liker);
-                } else {
-                    const novosLikers = fotoAchada.likers.filter(likerAtual => likerAtual.login !== liker.login);
-                    fotoAchada.likers = novosLikers;
-                }
-
-                PubSub.publish(TIMELINE_EVENT, this.fotos);
-            })
-            .catch(erro => {
-                console.error(erro);
-                exibeMensagem(erro.message);
-            });
+    static like(fotoId) {
+        return dispatch => {
+            fetch(`http://localhost:8080/api/fotos/${fotoId}/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`, { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("não foi possível realizar o like da foto");
+                    }
+                })
+                .then(liker => {
+                    dispatch({ type: 'LIKE', fotoId, liker })
+                    return liker;
+                })
+                .catch(erro => {
+                    console.error(erro);
+                    TimelineApi.exibeMensagem(erro.message);
+                });
+        }
     }
 
     static comenta(fotoId, textoComentario) {
@@ -81,10 +58,13 @@ export default class TimelineApi {
                         throw new Error("não foi possível comentar");
                     }
                 })
-                .then(novoComentario => dispatch({type: 'COMENTARIO', fotoId, novoComentario}))
+                .then(novoComentario => {
+                    dispatch({ type: 'COMENTARIO', fotoId, novoComentario })
+                    return novoComentario;
+                })
                 .catch(erro => {
                     console.error(erro);
-                    exibeMensagem(erro.message);
+                    TimelineApi.exibeMensagem(erro.message);
                 });
         }
     }
