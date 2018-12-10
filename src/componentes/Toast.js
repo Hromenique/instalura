@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import PubSub from 'pubsub-js';
-import { MESSAGE_EVENT } from '../eventos/Eventos';
 import '../css/toast.css';
 
 export default class Toast extends Component {
@@ -11,10 +9,15 @@ export default class Toast extends Component {
     }
 
     componentWillMount() {
-        PubSub.subscribe(MESSAGE_EVENT, (topico, message) => {
-            this.setState({ message: message })
-            this._show();
+        this.props.store.subscribe(() => {
+            this.setState({message: this.props.store.getState().notificacao}) ;
         });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot){
+        if(this.state.message !== ""){
+            this._show();
+        }  
     }
 
     _show() {
