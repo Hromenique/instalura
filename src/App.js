@@ -9,7 +9,7 @@ class App extends Component {
       <div id="root">
         <div className="main">
           <Header store={this.context.store}/>
-          <Timeline login={this.props.params.login} store={this.context.store}/>
+          <Timeline login={this.props.params.login}/>
           <Toast store={this.context.store} />
         </div>
       </div>
